@@ -1,0 +1,27 @@
+{
+  "name": "css-var-themer",
+  "version": "1.0.0",
+  "description": "A CLI tool to extract CSS variables from websites and generate themed variants using AI",
+  "main": "index.js",
+  "bin": {
+    "css-var-themer": "./cli.js"
+  },
+  "scripts": {
+    "start": "node cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "css",
+    "theming",
+    "css-variables",
+    "cli"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "commander": "^14.0.2",
+    "playwright-core": "^1.57.0",
+    "puppeteer": "^24.35.0"
+  }
+}
