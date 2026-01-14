@@ -99,7 +99,12 @@ Example output format:
     }
   }
   
-  const themedVariables = JSON.parse(jsonText);
+  let themedVariables;
+  try {
+    themedVariables = JSON.parse(jsonText);
+  } catch (error) {
+    throw new Error(`Failed to parse AI response as JSON: ${error.message}. Response: ${jsonText.substring(0, 200)}`);
+  }
   
   // Validate that all original variables are present
   for (const key of Object.keys(originalVariables)) {
