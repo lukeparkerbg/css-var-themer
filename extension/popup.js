@@ -42,20 +42,54 @@ extractBtn.addEventListener('click', async () => {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    const response = await chrome.tabs.sendMessage(tab.id, { action: 'extractVariables' });
-    
-    if (response.success) {
-      currentVariables = response.variables;
-      const count = response.count;
+    try {
+      const response = await chrome.tabs.sendMessage(tab.id, { action: 'extractVariables' });
       
-      showStatus(extractStatus, `✅ Successfully extracted ${count} CSS variables!`, 'success');
-      variableCount.textContent = `Found ${count} CSS variable${count !== 1 ? 's' : ''}`;
-      variableCount.classList.add('show');
+      if (response && response.success) {
+        currentVariables = response.variables;
+        const count = response.count;
+        
+        showStatus(extractStatus, `✅ Successfully extracted ${count} CSS variables!`, 'success');
+        variableCount.textContent = `Found ${count} CSS variable${count !== 1 ? 's' : ''}`;
+        variableCount.classList.add('show');
+        
+        // Enable generate button
+        generateBtn.disabled = false;
+      } else {
+        showStatus(extractStatus, '❌ Failed to extract variables', 'error');
+      }
+    } catch (msgError) {
+      // Content script not loaded, try to inject it
+      console.log('Content script not loaded, injecting...');
       
-      // Enable generate button
-      generateBtn.disabled = false;
-    } else {
-      showStatus(extractStatus, '❌ Failed to extract variables', 'error');
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['content.js']
+        });
+        
+        // Wait a bit for the script to initialize
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Try again
+        const retryResponse = await chrome.tabs.sendMessage(tab.id, { action: 'extractVariables' });
+        
+        if (retryResponse && retryResponse.success) {
+          currentVariables = retryResponse.variables;
+          const count = retryResponse.count;
+          
+          showStatus(extractStatus, `✅ Successfully extracted ${count} CSS variables!`, 'success');
+          variableCount.textContent = `Found ${count} CSS variable${count !== 1 ? 's' : ''}`;
+          variableCount.classList.add('show');
+          
+          // Enable generate button
+          generateBtn.disabled = false;
+        } else {
+          showStatus(extractStatus, '❌ Failed to extract variables', 'error');
+        }
+      } catch (injectError) {
+        showStatus(extractStatus, `❌ Could not access page: ${injectError.message}`, 'error');
+      }
     }
   } catch (error) {
     showStatus(extractStatus, `❌ Error: ${error.message}`, 'error');
@@ -224,13 +258,46 @@ async function applyTheme(themeId, themes) {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    const response = await chrome.tabs.sendMessage(tab.id, {
-      action: 'applyTheme',
-      variables: theme.variables
-    });
-    
-    if (response.success) {
-      showStatus(extractStatus, `✅ Theme "${theme.name}" applied!`, 'success');
+    // Ensure content script is loaded by injecting it if needed
+    try {
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        action: 'applyTheme',
+        variables: theme.variables
+      });
+      
+      if (response && response.success) {
+        showStatus(extractStatus, `✅ Theme "${theme.name}" applied!`, 'success');
+      } else {
+        showStatus(extractStatus, `❌ Failed to apply theme`, 'error');
+      }
+    } catch (msgError) {
+      // If sendMessage fails, the content script might not be loaded
+      // Try to inject it and then apply
+      console.log('Content script not loaded, injecting...');
+      
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['content.js']
+        });
+        
+        // Wait a bit for the script to initialize
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Try again
+        const retryResponse = await chrome.tabs.sendMessage(tab.id, {
+          action: 'applyTheme',
+          variables: theme.variables
+        });
+        
+        if (retryResponse && retryResponse.success) {
+          showStatus(extractStatus, `✅ Theme "${theme.name}" applied!`, 'success');
+        } else {
+          showStatus(extractStatus, `❌ Failed to apply theme`, 'error');
+        }
+      } catch (injectError) {
+        showStatus(extractStatus, `❌ Could not inject content script: ${injectError.message}`, 'error');
+      }
     }
   } catch (error) {
     showStatus(extractStatus, `❌ Error applying theme: ${error.message}`, 'error');
