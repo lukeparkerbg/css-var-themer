@@ -85,10 +85,16 @@ Example output format:
       }
     ],
     temperature: 0.7,
-    max_tokens: 2000,
+    max_tokens: 4096, // Increased to handle larger responses with many CSS variables
   });
   
   const responseText = completion.choices[0].message.content.trim();
+  
+  // Check if response was truncated due to token limit
+  const finishReason = completion.choices[0].finish_reason;
+  if (finishReason === 'length') {
+    console.warn('Warning: AI response was truncated due to token limit. Some variables may use original values.');
+  }
   
   // Extract JSON from the response (in case AI adds markdown code blocks)
   let jsonText = responseText;
@@ -103,7 +109,23 @@ Example output format:
   try {
     themedVariables = JSON.parse(jsonText);
   } catch (error) {
-    throw new Error(`Failed to parse AI response as JSON: ${error.message}. Response: ${jsonText.substring(0, 200)}`);
+    // If JSON parsing fails, try to repair incomplete JSON (common when truncated)
+    try {
+      // Try to close the JSON object if it's incomplete
+      let repairedJson = jsonText.trim();
+      if (!repairedJson.endsWith('}')) {
+        // Remove any incomplete property
+        const lastComma = repairedJson.lastIndexOf(',');
+        if (lastComma > 0) {
+          repairedJson = repairedJson.substring(0, lastComma);
+        }
+        repairedJson += '\n}';
+      }
+      themedVariables = JSON.parse(repairedJson);
+      console.warn('Repaired incomplete JSON response from AI');
+    } catch (repairError) {
+      throw new Error(`Failed to parse AI response as JSON: ${error.message}. Response: ${jsonText.substring(0, 200)}`);
+    }
   }
   
   // Validate that all original variables are present
