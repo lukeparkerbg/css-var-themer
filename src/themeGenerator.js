@@ -295,7 +295,9 @@ function multiplySpacing(spacing, factor) {
   if (match) {
     const value = parseFloat(match[1]) * factor;
     const unit = match[2];
-    return `${value.toFixed(3)}${unit}`;
+    // Format with up to 3 decimal places, removing trailing zeros
+    const formatted = parseFloat(value.toFixed(3));
+    return `${formatted}${unit}`;
   }
   return spacing;
 }

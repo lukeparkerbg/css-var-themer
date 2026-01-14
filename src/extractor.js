@@ -1,4 +1,5 @@
 import { chromium } from 'playwright-core';
+import fs from 'fs';
 
 /**
  * Extract all CSS variables from a website using a headless browser
@@ -9,10 +10,27 @@ export async function extractCSSVariables(url) {
   let browser;
   
   try {
+    // Find available browser executable
+    const possiblePaths = [
+      process.env.CHROME_PATH,
+      '/usr/bin/chromium-browser',
+      '/usr/bin/chromium',
+      '/usr/bin/google-chrome',
+      '/usr/bin/chrome'
+    ].filter(Boolean);
+    
+    const executablePath = possiblePaths.find(path => {
+      try {
+        return fs.existsSync(path);
+      } catch {
+        return false;
+      }
+    });
+    
     // Launch browser (use system Chrome if available)
     browser = await chromium.launch({
       headless: true,
-      executablePath: process.env.CHROME_PATH || '/usr/bin/chromium-browser' || '/usr/bin/google-chrome',
+      executablePath: executablePath,
     });
     
     const page = await browser.newPage();

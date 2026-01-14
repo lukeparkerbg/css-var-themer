@@ -21,7 +21,6 @@
   "type": "module",
   "dependencies": {
     "commander": "^14.0.2",
-    "playwright-core": "^1.57.0",
-    "puppeteer": "^24.35.0"
+    "playwright-core": "^1.57.0"
   }
 }
