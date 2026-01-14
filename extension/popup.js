@@ -168,9 +168,17 @@ function renderThemes(themes) {
   }
   
   themesList.innerHTML = themes.map(theme => {
-    // Get color preview
+    // Get color preview - use more comprehensive color detection
     const colors = Object.entries(theme.variables)
-      .filter(([key, value]) => key.toLowerCase().includes('color') && value.startsWith('#'))
+      .filter(([key, value]) => {
+        const lowerKey = key.toLowerCase();
+        const lowerValue = (value || '').toString().toLowerCase();
+        return (lowerKey.includes('color') || lowerKey.includes('bg') || lowerKey.includes('background')) &&
+               (value.startsWith('#') || 
+                value.startsWith('rgb') || 
+                value.startsWith('hsl') ||
+                /^(red|blue|green|white|black|gray|grey|yellow|orange|purple|pink|brown)$/i.test(value));
+      })
       .slice(0, 5)
       .map(([key, value]) => value);
     

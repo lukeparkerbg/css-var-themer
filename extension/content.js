@@ -48,7 +48,10 @@ function extractCSSVariables() {
           }
         }
       } catch (e) {
-        // Skip cross-origin stylesheets
+        // Skip cross-origin stylesheets and other access errors
+        if (e.name !== 'SecurityError') {
+          console.warn('Stylesheet access error:', e);
+        }
       }
     }
   } catch (e) {

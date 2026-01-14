@@ -5,12 +5,6 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log('CSS Var Themer extension installed');
 });
 
-// Helper function to get current tab
-async function getCurrentTab() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  return tab;
-}
-
 // Message handler
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'saveTheme') {
