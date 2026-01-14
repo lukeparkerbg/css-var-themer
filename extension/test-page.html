@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Var Themer - Test Page</title>
+  <style>
+    :root {
+      --primary-color: #3b82f6;
+      --secondary-color: #10b981;
+      --background-color: #ffffff;
+      --surface-color: #f3f4f6;
+      --text-color: #1f2937;
+      --text-secondary: #6b7280;
+      --border-color: #e5e7eb;
+      --spacing: 1rem;
+      --border-radius: 0.5rem;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      padding: var(--spacing);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: calc(var(--spacing) * 2);
+    }
+    
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: calc(var(--spacing) * 2);
+      font-size: 2.5rem;
+    }
+    
+    .card {
+      background-color: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: calc(var(--spacing) * 2);
+      margin-bottom: var(--spacing);
+    }
+    
+    .card h2 {
+      color: var(--primary-color);
+      margin-bottom: var(--spacing);
+    }
+    
+    .card p {
+      color: var(--text-color);
+      margin-bottom: calc(var(--spacing) / 2);
+    }
+    
+    .button {
+      background-color: var(--primary-color);
+      color: white;
+      padding: calc(var(--spacing) / 2) var(--spacing);
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 1rem;
+      margin-right: calc(var(--spacing) / 2);
+    }
+    
+    .button-secondary {
+      background-color: var(--secondary-color);
+    }
+    
+    .info-text {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: calc(var(--spacing) * 2);
+      padding: var(--spacing);
+      background: var(--surface-color);
+      border-left: 4px solid var(--primary-color);
+      border-radius: var(--border-radius);
+    }
+    
+    .color-preview {
+      display: flex;
+      gap: var(--spacing);
+      margin-top: var(--spacing);
+    }
+    
+    .color-box {
+      width: 100px;
+      height: 100px;
+      border-radius: var(--border-radius);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 CSS Var Themer Test Page</h1>
+    
+    <div class="card">
+      <h2>Welcome!</h2>
+      <p>This page uses CSS variables that you can theme with the CSS Var Themer extension.</p>
+      <p>Try these steps:</p>
+      <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+        <li>Click the CSS Var Themer extension icon</li>
+        <li>Click "Extract CSS Variables"</li>
+        <li>Enter a theme description like "dark mode" or "ocean blue"</li>
+        <li>Give it a name and click "Generate Theme"</li>
+        <li>Click "Apply" to see the changes!</li>
+      </ol>
+    </div>
+    
+    <div class="card">
+      <h2>Color Preview</h2>
+      <p>These colors use CSS variables and will change with themes:</p>
+      <div class="color-preview">
+        <div class="color-box" style="background-color: var(--primary-color);">Primary</div>
+        <div class="color-box" style="background-color: var(--secondary-color);">Secondary</div>
+        <div class="color-box" style="background-color: var(--text-color);">Text</div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>Interactive Elements</h2>
+      <p>Buttons and interactive elements styled with CSS variables:</p>
+      <button class="button">Primary Button</button>
+      <button class="button button-secondary">Secondary Button</button>
+    </div>
+    
+    <div class="info-text">
+      <strong>💡 Tip:</strong> Try theme descriptions like "dark", "ocean", "sunset", "cyberpunk neon", 
+      or "warm and cozy" to see different variations!
+    </div>
+  </div>
+</body>
+</html>

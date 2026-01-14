@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Var Themer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎨 CSS Var Themer</h1>
+      <p class="subtitle">AI-Powered Theme Management</p>
+    </header>
+
+    <div class="section">
+      <h2>Current Page</h2>
+      <button id="extractBtn" class="btn btn-primary">
+        🔍 Extract CSS Variables
+      </button>
+      <div id="extractStatus" class="status"></div>
+      <div id="variableCount" class="info"></div>
+    </div>
+
+    <div class="section">
+      <h2>Create New Theme</h2>
+      <div class="form-group">
+        <label for="themeDescription">Theme Description</label>
+        <input 
+          type="text" 
+          id="themeDescription" 
+          placeholder="e.g., dark mode, cyberpunk neon, warm cozy cafe"
+          class="input"
+        >
+      </div>
+      <div class="form-group">
+        <label for="themeName">Theme Name</label>
+        <input 
+          type="text" 
+          id="themeName" 
+          placeholder="My Custom Theme"
+          class="input"
+        >
+      </div>
+      <div class="form-group">
+        <label for="apiKey">OpenAI API Key (optional)</label>
+        <input 
+          type="password" 
+          id="apiKey" 
+          placeholder="sk-..."
+          class="input"
+        >
+        <small>Leave empty to use rule-based generation</small>
+      </div>
+      <button id="generateBtn" class="btn btn-primary" disabled>
+        ✨ Generate Theme
+      </button>
+      <div id="generateStatus" class="status"></div>
+    </div>
+
+    <div class="section">
+      <h2>Saved Themes</h2>
+      <div id="themesList" class="themes-list">
+        <p class="empty-state">No themes saved yet. Extract variables and generate a theme to get started!</p>
+      </div>
+    </div>
+
+    <div class="section settings">
+      <h2>Settings</h2>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="autoSaveApiKey">
+          Remember API Key
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <script src="themeGenerator.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
