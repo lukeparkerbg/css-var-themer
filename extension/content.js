@@ -109,6 +109,35 @@ function showNotification(message) {
     existing.remove();
   }
   
+  // Add animation styles once if not already present
+  if (!document.getElementById('css-var-themer-styles')) {
+    const style = document.createElement('style');
+    style.id = 'css-var-themer-styles';
+    style.textContent = `
+      @keyframes cssVarThemerSlideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes cssVarThemerSlideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
   // Create notification element
   const notification = document.createElement('div');
   notification.id = 'css-var-themer-notification';
@@ -128,32 +157,6 @@ function showNotification(message) {
     font-weight: 500;
     animation: cssVarThemerSlideIn 0.3s ease-out;
   `;
-  
-  // Add animation
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes cssVarThemerSlideIn {
-      from {
-        transform: translateX(400px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-    @keyframes cssVarThemerSlideOut {
-      from {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      to {
-        transform: translateX(400px);
-        opacity: 0;
-      }
-    }
-  `;
-  document.head.appendChild(style);
   
   document.body.appendChild(notification);
   
