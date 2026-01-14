@@ -128,20 +128,42 @@ extension/
 ### "No CSS variables found"
 - Some websites don't use CSS variables
 - Try a different website like GitHub, Tailwind CSS docs, or modern web apps
+- Open `extension/test-page.html` in your browser as a test
 
 ### "Failed to extract variables"
 - Refresh the page and try again
 - Check if the website has Content Security Policy restrictions
+- The extension will automatically inject the content script if needed
+
+### Theme not applying correctly
+- **Fixed in latest version**: The extension now uses `!important` CSS rules to ensure themes override page styles
+- Look for a green notification in the top-right corner when theme is applied
+- Check browser console (F12) for "CSS Var Themer: Applied X variables" message
+- If still not working, reload the extension and try again
+- Some pages with very strict CSP policies may block theme application
 
 ### "AI generation failed"
 - Check your API key is valid
 - Ensure you have API credits available
 - The extension will fall back to rule-based generation
 
+### Testing the Extension
+1. Open `extension/test-page.html` in Chrome
+2. Use the extension to extract variables and create themes
+3. Apply themes to see immediate visual changes
+
 ## Related
 
 This extension is part of the CSS Var Themer project. Check out the CLI version for batch processing and automation:
 - GitHub: [lukeparkerbg/css-var-themer](https://github.com/lukeparkerbg/css-var-themer)
+
+## Changelog
+
+### Latest Update
+- **Fixed**: Theme application now works correctly with `!important` CSS injection
+- **Added**: Visual notification when theme is applied
+- **Improved**: Better error handling and content script injection
+- **Added**: Test page for trying the extension
 
 ## License
 
