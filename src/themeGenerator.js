@@ -113,14 +113,29 @@ Example output format:
     try {
       // Try to close the JSON object if it's incomplete
       let repairedJson = jsonText.trim();
+      
+      // Remove any incomplete property (anything after the last complete key-value pair)
       if (!repairedJson.endsWith('}')) {
-        // Remove any incomplete property
-        const lastComma = repairedJson.lastIndexOf(',');
-        if (lastComma > 0) {
-          repairedJson = repairedJson.substring(0, lastComma);
+        // Find the last complete property by looking for ," or ,\n patterns
+        const lastCompleteProperty = repairedJson.lastIndexOf('",');
+        const lastCompletePropertyNewline = repairedJson.lastIndexOf('",\n');
+        const lastComplete = Math.max(lastCompleteProperty, lastCompletePropertyNewline);
+        
+        if (lastComplete !== -1) {
+          // Keep everything up to and including the closing quote and comma
+          repairedJson = repairedJson.substring(0, lastComplete + 1);
+        } else {
+          // If no complete property found, try removing content after last comma
+          const lastComma = repairedJson.lastIndexOf(',');
+          if (lastComma !== -1) {
+            repairedJson = repairedJson.substring(0, lastComma);
+          }
         }
+        
+        // Close the JSON object
         repairedJson += '\n}';
       }
+      
       themedVariables = JSON.parse(repairedJson);
       console.warn('Repaired incomplete JSON response from AI');
     } catch (repairError) {
