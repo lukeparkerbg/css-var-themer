@@ -20,6 +20,19 @@ cd css-var-themer
 
 # Install dependencies
 npm install
+
+# (Optional) Install globally to use the 'css-var-themer' command anywhere
+npm install -g .
+```
+
+After global installation, you can use:
+```bash
+css-var-themer extract --url https://example.com --themes "dark,light"
+```
+
+Otherwise, use:
+```bash
+node cli.js extract --url https://example.com --themes "dark,light"
 ```
 
 ## Usage
