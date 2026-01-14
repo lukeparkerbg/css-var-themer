@@ -6,4 +6,5 @@ build/
 .env
 *.lock
 output/
+*-output/
 themes/
