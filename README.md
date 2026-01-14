@@ -1,9 +1,18 @@
 # css-var-themer
 
-A powerful CLI tool to extract CSS variables from websites and generate themed variants using **real AI-powered transformations**.
+A powerful toolkit to extract CSS variables from websites and generate themed variants using **real AI-powered transformations**.
+
+## 🚀 Two Ways to Use
+
+### 1. CLI Tool (Command Line)
+Extract CSS variables and generate themes from the command line. Perfect for automation and batch processing.
+
+### 2. Chrome Extension
+Browser extension with a visual interface to extract, create, and manage themes for any website you visit.
 
 ## Features
 
+### CLI Features
 - 🌐 **Extract CSS Variables**: Visit any website with a headless browser and extract all CSS custom properties
 - 🤖 **True AI-Powered Theme Generation**: Use OpenAI GPT to interpret any theme description and generate appropriate CSS variables
 - 💬 **Natural Language Themes**: Describe themes in plain English (e.g., "vibrant and energetic", "calm corporate blue", "retro 80s neon")
@@ -12,7 +21,16 @@ A powerful CLI tool to extract CSS variables from websites and generate themed v
 - 🔄 **Fallback Mode**: Works with rule-based generation when AI is not available
 - 📦 **Zero Configuration**: Works out of the box with sensible defaults
 
+### Chrome Extension Features
+- 🔍 **One-Click Extraction**: Extract CSS variables from any website instantly
+- 🎨 **Visual Theme Manager**: Create, apply, and manage themes through an intuitive UI
+- 💾 **Save & Organize**: Keep unlimited themes per website, stored locally
+- 📤 **Export Themes**: Download themes as JSON files to share or backup
+- 🔒 **Privacy First**: All data stored locally in your browser
+
 ## Installation
+
+### CLI Tool
 
 ```bash
 # Clone the repository
@@ -25,6 +43,14 @@ npm install
 # (Optional) Install globally to use the 'css-var-themer' command anywhere
 npm install -g .
 ```
+
+### Chrome Extension
+
+1. Navigate to the `extension` folder in this repository
+2. Open Chrome and go to `chrome://extensions/`
+3. Enable "Developer mode"
+4. Click "Load unpacked" and select the `extension` folder
+5. See `extension/README.md` for detailed installation and usage instructions
 
 ## AI Setup (Recommended)
 
@@ -291,7 +317,22 @@ CHROME_PATH=/path/to/chrome node cli.js extract --url https://example.com
 ### Network errors
 If the tool can't access external websites, it will automatically fall back to using mock data for demonstration purposes. For production use, ensure network access is available.
 
+## Chrome Extension Usage
+
+The Chrome extension provides a visual interface for the same functionality. See the `extension/README.md` for detailed instructions.
+
+**Quick Start:**
+1. Install the extension (see Installation section above)
+2. Navigate to any website
+3. Click the extension icon
+4. Click "Extract CSS Variables"
+5. Enter a theme description and name
+6. Click "Generate Theme"
+7. Apply, export, or manage your themes!
+
 ## Development
+
+### CLI Development
 
 ```bash
 # Install dependencies
@@ -302,6 +343,35 @@ node cli.js extract --url <your-url>
 
 # Run with debug output
 DEBUG=1 node cli.js extract --url <your-url>
+```
+
+### Extension Development
+
+```bash
+# Make changes in the extension/ folder
+# Then reload the extension in chrome://extensions/
+```
+
+See `extension/README.md` for debugging tips.
+
+## Project Structure
+
+```
+css-var-themer/
+├── cli.js                 # CLI entry point
+├── src/                   # Shared utilities
+│   ├── extractor.js      # CSS variable extraction (Node.js)
+│   ├── themeGenerator.js # AI theme generation (Node.js)
+│   └── fileUtils.js      # File operations
+├── extension/            # Chrome extension
+│   ├── manifest.json     # Extension config
+│   ├── popup.html/css/js # Extension UI
+│   ├── content.js        # Page interaction script
+│   ├── background.js     # Storage management
+│   ├── themeGenerator.js # Browser-compatible theme generation
+│   └── README.md         # Extension documentation
+├── example.html          # Example HTML with CSS variables
+└── README.md            # This file
 ```
 
 ## Contributing

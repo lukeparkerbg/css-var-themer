@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate Extension Icons</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .icon-canvas {
+      margin: 20px 0;
+      border: 2px solid #ddd;
+    }
+    .download-link {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      background: #3b82f6;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>CSS Var Themer - Icon Generator</h1>
+  <p>Click the buttons below to download the extension icons:</p>
+  
+  <canvas id="canvas16" class="icon-canvas" width="16" height="16"></canvas>
+  <a id="download16" class="download-link">Download 16x16 Icon</a>
+  
+  <br>
+  
+  <canvas id="canvas48" class="icon-canvas" width="48" height="48"></canvas>
+  <a id="download48" class="download-link">Download 48x48 Icon</a>
+  
+  <br>
+  
+  <canvas id="canvas128" class="icon-canvas" width="128" height="128"></canvas>
+  <a id="download128" class="download-link">Download 128x128 Icon</a>
+
+  <script>
+    function drawIcon(canvas) {
+      const ctx = canvas.getContext('2d');
+      const size = canvas.width;
+      
+      // Background
+      ctx.fillStyle = '#3b82f6';
+      ctx.fillRect(0, 0, size, size);
+      
+      // Paint palette symbol
+      ctx.fillStyle = '#ffffff';
+      
+      // Simple color dots representing a theme palette
+      const dotSize = size / 6;
+      const spacing = size / 4;
+      
+      ctx.beginPath();
+      ctx.arc(spacing, spacing, dotSize, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(size - spacing, spacing, dotSize, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(spacing, size - spacing, dotSize, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(size - spacing, size - spacing, dotSize, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+    
+    function setupDownload(canvasId, linkId, filename) {
+      const canvas = document.getElementById(canvasId);
+      const link = document.getElementById(linkId);
+      
+      drawIcon(canvas);
+      
+      link.href = canvas.toDataURL('image/png');
+      link.download = filename;
+    }
+    
+    setupDownload('canvas16', 'download16', 'icon16.png');
+    setupDownload('canvas48', 'download48', 'icon48.png');
+    setupDownload('canvas128', 'download128', 'icon128.png');
+  </script>
+</body>
+</html>
