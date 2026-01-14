@@ -1,6 +1,7 @@
+import OpenAI from 'openai';
+
 /**
  * Generate themed variants of CSS variables using AI-powered transformations
- * This simulates AI behavior by applying intelligent color and value transformations
  * @param {Object} originalVariables - Original CSS variables
  * @param {Array<string>} themeDescriptions - Array of theme names/descriptions
  * @returns {Promise<Object>} - Object with theme names as keys and their CSS variables as values
@@ -8,12 +9,106 @@
 export async function generateThemes(originalVariables, themeDescriptions) {
   const themes = {};
   
+  // Check if OpenAI API key is available
+  const useAI = !!process.env.OPENAI_API_KEY;
+  
+  if (!useAI) {
+    console.warn('⚠️  OPENAI_API_KEY not found. Using fallback rule-based generation.');
+    console.warn('   Set OPENAI_API_KEY environment variable to use AI-powered theme generation.\n');
+  }
+  
   for (const themeName of themeDescriptions) {
     console.log(`  🎨 Generating "${themeName}" theme...`);
-    themes[themeName] = generateThemeVariant(originalVariables, themeName);
+    
+    if (useAI) {
+      try {
+        themes[themeName] = await generateThemeWithAI(originalVariables, themeName);
+      } catch (error) {
+        console.warn(`   ⚠️  AI generation failed for "${themeName}": ${error.message}`);
+        console.warn(`   Falling back to rule-based generation...`);
+        themes[themeName] = generateThemeVariant(originalVariables, themeName);
+      }
+    } else {
+      themes[themeName] = generateThemeVariant(originalVariables, themeName);
+    }
   }
   
   return themes;
+}
+
+/**
+ * Generate a theme variant using AI (OpenAI GPT)
+ * @param {Object} originalVariables - Original CSS variables
+ * @param {string} themeDescription - Natural language description of the theme
+ * @returns {Promise<Object>} - Themed CSS variables
+ */
+async function generateThemeWithAI(originalVariables, themeDescription) {
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  
+  const prompt = `You are a CSS theming expert. Given the following original CSS variables and a theme description, generate new values for each variable that match the theme.
+
+Original CSS Variables:
+${JSON.stringify(originalVariables, null, 2)}
+
+Theme Description: "${themeDescription}"
+
+Instructions:
+1. Analyze each CSS variable and its current value
+2. Based on the theme description, generate appropriate new values
+3. For colors: adjust colors to match the theme mood, palette, and style
+4. For spacing: adjust if the theme implies compact/spacious/comfortable sizing
+5. For fonts: adjust if the theme implies different typography style
+6. Maintain the same CSS variable names
+7. Ensure all values are valid CSS values
+8. Return ONLY a valid JSON object with the CSS variable names as keys and new values as values
+9. Do not include any explanatory text, only the JSON object
+
+Example output format:
+{
+  "--primary-color": "#new-value",
+  "--background-color": "#new-value",
+  ...
+}`;
+
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      {
+        role: "system",
+        content: "You are a CSS theming expert. You generate themed CSS variable values based on theme descriptions. Always respond with valid JSON only, no additional text."
+      },
+      {
+        role: "user",
+        content: prompt
+      }
+    ],
+    temperature: 0.7,
+    max_tokens: 2000,
+  });
+  
+  const responseText = completion.choices[0].message.content.trim();
+  
+  // Extract JSON from the response (in case AI adds markdown code blocks)
+  let jsonText = responseText;
+  if (responseText.includes('```')) {
+    const match = responseText.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    if (match) {
+      jsonText = match[1];
+    }
+  }
+  
+  const themedVariables = JSON.parse(jsonText);
+  
+  // Validate that all original variables are present
+  for (const key of Object.keys(originalVariables)) {
+    if (!(key in themedVariables)) {
+      themedVariables[key] = originalVariables[key];
+    }
+  }
+  
+  return themedVariables;
 }
 
 /**

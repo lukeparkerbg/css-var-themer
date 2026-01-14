@@ -1,14 +1,15 @@
 # css-var-themer
 
-A powerful CLI tool to extract CSS variables from websites and generate themed variants using AI-powered transformations.
+A powerful CLI tool to extract CSS variables from websites and generate themed variants using **real AI-powered transformations**.
 
 ## Features
 
 - 🌐 **Extract CSS Variables**: Visit any website with a headless browser and extract all CSS custom properties
-- 🎨 **AI-Powered Theme Generation**: Automatically generate theme variants based on your descriptions
+- 🤖 **True AI-Powered Theme Generation**: Use OpenAI GPT to interpret any theme description and generate appropriate CSS variables
+- 💬 **Natural Language Themes**: Describe themes in plain English (e.g., "vibrant and energetic", "calm corporate blue", "retro 80s neon")
 - 💾 **Multiple Output Formats**: Get both JSON and ready-to-use CSS files
 - ⚡ **Fast & Efficient**: Built with modern tools like Playwright for reliable extraction
-- 🎯 **Smart Color Transformations**: Intelligent color modifications based on theme type (dark, light, ocean, etc.)
+- 🔄 **Fallback Mode**: Works with rule-based generation when AI is not available
 - 📦 **Zero Configuration**: Works out of the box with sensible defaults
 
 ## Installation
@@ -25,6 +26,21 @@ npm install
 npm install -g .
 ```
 
+## AI Setup (Recommended)
+
+To enable AI-powered theme generation, set your OpenAI API key:
+
+```bash
+export OPENAI_API_KEY='your-api-key-here'
+```
+
+Or create a `.env` file (remember to add it to `.gitignore`):
+```bash
+echo "OPENAI_API_KEY=your-api-key-here" > .env
+```
+
+**Without an API key**, the tool falls back to rule-based theme generation with predefined transformations.
+
 After global installation, you can use:
 ```bash
 css-var-themer extract --url https://example.com --themes "dark,light"
@@ -39,33 +55,55 @@ node cli.js extract --url https://example.com --themes "dark,light"
 
 ### Basic Usage
 
-Extract CSS variables and generate themes:
+Extract CSS variables and generate themes with AI:
 
 ```bash
-node cli.js extract --url https://example.com --themes "dark,light,ocean"
+# With AI (when OPENAI_API_KEY is set)
+OPENAI_API_KEY=your-key node cli.js extract --url https://example.com --themes "dark,light,ocean"
 ```
 
 ### Options
 
 - `-u, --url <url>` (required): Website URL to extract CSS variables from
-- `-t, --themes <themes>` (optional): Comma-separated list of theme names/descriptions (default: "dark,light")
+- `-t, --themes <themes>` (optional): Comma-separated theme descriptions in natural language (default: "dark,light")
 - `-o, --output <directory>` (optional): Output directory for generated files (default: "./output")
 
-### Examples
+### Examples with AI-Powered Themes
+
+The beauty of AI-powered theme generation is that you can use **any description**:
 
 ```bash
-# Generate dark and light themes (default)
-node cli.js extract --url https://example.com
+# Simple color-based themes
+node cli.js extract --url https://example.com --themes "dark,light,midnight blue"
 
-# Generate multiple custom themes
-node cli.js extract --url https://example.com --themes "dark,light,ocean,sunset,forest"
+# Descriptive mood-based themes
+node cli.js extract --url https://example.com --themes "professional and clean,warm and welcoming,energetic and bold"
 
-# Specify custom output directory
+# Style-based themes
+node cli.js extract --url https://example.com --themes "retro 80s neon,minimalist nordic,vintage newspaper"
+
+# Seasonal themes
+node cli.js extract --url https://example.com --themes "spring garden,summer beach,autumn forest,winter wonderland"
+
+# Brand-inspired themes
+node cli.js extract --url https://example.com --themes "tech startup vibrant,corporate conservative,creative agency playful"
+
+# Custom output directory
 node cli.js extract --url https://example.com --themes "dark,light" --output ./my-themes
-
-# Test with the included example HTML file
-node cli.js extract --url file:///path/to/css-var-themer/example.html --themes "dark,light,purple"
 ```
+
+### Fallback Mode (Without AI)
+
+If `OPENAI_API_KEY` is not set, the tool uses rule-based transformations for these keywords:
+- `dark`, `night` - Dark color schemes
+- `light`, `bright` - Light color schemes
+- `ocean`, `blue` - Blue-tinted themes
+- `forest`, `green` - Green-tinted themes
+- `sunset`, `warm` - Warm color tones
+- `purple`, `violet` - Purple color schemes
+- `grayscale`, `mono` - Monochromatic themes
+- `compact`, `dense` - Reduced spacing
+- `spacious`, `comfortable` - Increased spacing
 
 ## Quick Start Demo
 
@@ -75,8 +113,8 @@ Try the tool with the included example HTML file:
 # 1. Start a local server (in one terminal)
 python3 -m http.server 8080
 
-# 2. Run the CLI (in another terminal)
-node cli.js extract --url http://localhost:8080/example.html --themes "dark,light,ocean,sunset"
+# 2. Run the CLI with AI (in another terminal)
+OPENAI_API_KEY=your-key node cli.js extract --url http://localhost:8080/example.html --themes "cyberpunk neon,elegant minimalist,warm cozy cafe"
 
 # 3. Check the output directory
 ls -la output/
@@ -115,35 +153,33 @@ Simply include the generated CSS file in your HTML:
 <link rel="stylesheet" href="output/theme-light.css">
 ```
 
-## Theme Types
-
-The AI recognizes various theme keywords and applies appropriate transformations:
-
-- **dark/night**: Dark color schemes with inverted brightness
-- **light/bright**: Lighter, brighter color schemes
-- **ocean/blue**: Blue-tinted themes
-- **forest/green**: Green-tinted themes
-- **sunset/warm**: Warm color tones (orange/red bias)
-- **purple/violet**: Purple color schemes
-- **mono/grayscale**: Monochromatic themes
-- **compact/dense**: Reduced spacing (75% of original)
-- **spacious/comfortable**: Increased spacing (125% of original)
-
-You can combine keywords for unique effects (e.g., "dark-ocean", "light-purple")!
-
 ## How It Works
 
+### AI-Powered Mode (with OPENAI_API_KEY)
+
 1. **Extraction**: The tool uses Playwright (headless Chromium) to visit the target website and extract all CSS variables defined in `:root` and throughout stylesheets
-2. **Analysis**: CSS variables are analyzed to determine their type (color, spacing, font, etc.)
-3. **Transformation**: Based on the theme description, intelligent transformations are applied:
-   - Colors are adjusted using HSV color space manipulation
-   - Spacing values are scaled appropriately
-   - Font choices are modified for theme consistency
+2. **AI Analysis**: The original CSS variables are sent to OpenAI GPT along with your natural language theme description
+3. **AI Generation**: GPT analyzes each variable and generates new values that match your theme description:
+   - Interprets the mood, style, and intent of your theme description
+   - Adjusts colors to match the theme palette and emotional tone
+   - Modifies spacing if the theme implies size changes
+   - Updates fonts if the theme suggests different typography
 4. **Output**: Results are saved as both JSON (for programmatic use) and CSS files (for immediate use)
+
+### Fallback Mode (without API key)
+
+When no API key is provided, the tool uses rule-based transformations for common theme keywords:
+- Colors are adjusted using HSV color space manipulation
+- Spacing values are scaled based on keywords like "compact" or "spacious"
+- Font choices are modified for keywords like "modern" or "classic"
 
 ## Examples
 
-### Input Website Variables
+### AI-Generated Theme Examples
+
+With AI, the possibilities are limitless. Here are some examples:
+
+#### Input Website Variables
 ```css
 :root {
   --primary-color: #3b82f6;
@@ -153,24 +189,35 @@ You can combine keywords for unique effects (e.g., "dark-ocean", "light-purple")
 }
 ```
 
-### Generated Dark Theme
+#### AI-Generated "Cyberpunk Neon" Theme
+```css
+/* CSS Variables - cyberpunk neon theme */
+:root {
+  --primary-color: #ff00ff;
+  --background-color: #0a0a0a;
+  --text-color: #00ffff;
+  --spacing: 1rem;
+}
+```
+
+#### AI-Generated "Warm Cozy Cafe" Theme
+```css
+/* CSS Variables - warm cozy cafe theme */
+:root {
+  --primary-color: #8b5a3c;
+  --background-color: #f5e6d3;
+  --text-color: #4a3728;
+  --spacing: 1.2rem;
+}
+```
+
+#### Fallback "Dark" Theme (rule-based)
 ```css
 /* CSS Variables - dark theme */
 :root {
   --primary-color: #0b1a31;
   --background-color: #333333;
   --text-color: #bbbec3;
-  --spacing: 1rem;
-}
-```
-
-### Generated Ocean Theme
-```css
-/* CSS Variables - ocean theme */
-:root {
-  --primary-color: #2782ff;
-  --background-color: #ebffff;
-  --text-color: #0b2969;
   --spacing: 1rem;
 }
 ```
@@ -186,11 +233,18 @@ import { extractCSSVariables } from './src/extractor.js';
 import { generateThemes } from './src/themeGenerator.js';
 import { saveToFile } from './src/fileUtils.js';
 
+// Set API key for AI-powered generation
+process.env.OPENAI_API_KEY = 'your-api-key';
+
 // Extract variables
 const variables = await extractCSSVariables('https://example.com');
 
-// Generate themes
-const themes = await generateThemes(variables, ['dark', 'light', 'ocean']);
+// Generate themes with AI (natural language descriptions)
+const themes = await generateThemes(variables, [
+  'dark mode with purple accents',
+  'light and airy spring theme',
+  'professional corporate blue'
+]);
 
 // Save to files
 saveToFile('./output/themes.json', themes);
@@ -198,11 +252,13 @@ saveToFile('./output/themes.json', themes);
 
 ### Environment Variables
 
+- `OPENAI_API_KEY`: OpenAI API key for AI-powered theme generation (required for AI mode)
 - `CHROME_PATH`: Custom path to Chrome/Chromium executable
 - `DEBUG`: Set to any value to enable detailed error messages
 
 ```bash
-CHROME_PATH=/usr/bin/chromium-browser node cli.js extract --url https://example.com
+# Use AI with custom browser path
+OPENAI_API_KEY=sk-... CHROME_PATH=/usr/bin/chromium-browser node cli.js extract --url https://example.com
 ```
 
 ## Requirements
@@ -211,6 +267,9 @@ CHROME_PATH=/usr/bin/chromium-browser node cli.js extract --url https://example.
 - A Chromium-based browser (automatically used if available)
   - The tool will use system Chrome/Chromium if found
   - Falls back to mock data if browser is unavailable (for demonstration)
+- OpenAI API key (optional, for AI-powered theme generation)
+  - Get your key at https://platform.openai.com/api-keys
+  - Without it, the tool uses rule-based transformations
 
 ## Troubleshooting
 

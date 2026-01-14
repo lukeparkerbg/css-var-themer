@@ -16,13 +16,21 @@ program
 
 program
   .command('extract')
-  .description('Extract CSS variables from a website and generate themes')
+  .description('Extract CSS variables from a website and generate themes using AI')
   .requiredOption('-u, --url <url>', 'Website URL to extract CSS variables from')
-  .option('-t, --themes <themes>', 'Number and description of themes (e.g., "dark,light,ocean")', 'dark,light')
+  .option('-t, --themes <themes>', 'Comma-separated theme descriptions (e.g., "dark,light,vibrant and energetic,calm and professional")', 'dark,light')
   .option('-o, --output <directory>', 'Output directory for generated files', './output')
   .action(async (options) => {
     try {
       console.log('🚀 CSS Var Themer Starting...\n');
+      
+      // Check for AI availability
+      if (process.env.OPENAI_API_KEY) {
+        console.log('🤖 AI-powered theme generation enabled (OpenAI GPT)\n');
+      } else {
+        console.log('📋 Using rule-based theme generation (set OPENAI_API_KEY for AI mode)\n');
+      }
+      
       console.log(`📍 Target URL: ${options.url}`);
       
       // Parse theme descriptions
